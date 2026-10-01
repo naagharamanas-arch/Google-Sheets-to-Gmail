@@ -1,0 +1,151 @@
+{
+  "name": "Google Sheet Automation",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        -48
+      ],
+      "id": "768a434f-fd2f-4341-a7f4-99462c6b03c2",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1o7ZzcU2nYDFfauk3REGtPrz460alIMxu8fGJ5K16JwY",
+          "mode": "list",
+          "cachedResultName": "Ramana Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o7ZzcU2nYDFfauk3REGtPrz460alIMxu8fGJ5K16JwY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o7ZzcU2nYDFfauk3REGtPrz460alIMxu8fGJ5K16JwY/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -224,
+        -48
+      ],
+      "id": "be86853f-597a-4e57-8f3f-b9b3d63b6171",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EM4HwhJb3y9io6Gq",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0af60993-ac83-44c5-b51c-4a08a3b6ec22",
+              "name": "subject",
+              "value": "=Data Summary from Google Sheet",
+              "type": "string"
+            },
+            {
+              "id": "a24fb685-1b02-4bba-8320-3a99d7031df3",
+              "name": "body",
+              "value": "={{ $input.all().map(item => 'Company Name: ' + (item.json['Company Name '] || 'Not provided').trim() + '\\nEmail: ' + (item.json['Email id'] || '') + '\\nPhone: ' + (item.json['Phone No'] || '') + '\\nAdditional Nos: ' + (item.json['Additional Nos'] || '')).join('\\n\\n') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        0,
+        -48
+      ],
+      "id": "ed79de51-2a01-4e25-b838-0a55feece734",
+      "name": "Edit Fields",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "sendTo": "naagharamanas@gmail.com",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        -48
+      ],
+      "id": "1cac2141-fd3c-4758-a8a3-d5f4723452f2",
+      "name": "Send a message",
+      "webhookId": "fd506e42-1943-4ecb-9251-c2c57c624a58",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "P79v2XmU5dmP2jMP",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7506aea3-64f2-4206-9aea-87e3030b0710",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1719306ecf767a93863a83780403ff85bc3c04fae7e1133074784d4039bddba7"
+  },
+  "nodeGroups": [],
+  "id": "YBssxMkvTCQpIXgR",
+  "tags": []
+}
